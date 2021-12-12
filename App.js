@@ -14,16 +14,55 @@ import SettingsScreen from './Components/Screens/SettingsScreen';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Phrases" component={PhrasesScreen} />
-        <Stack.Screen name="Dictionary" component={DictionaryScreen} />
-        <Stack.Screen name="Settings" component={SettingsScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+    return (
+        <NavigationContainer>
+            <Stack.Navigator screenOptions={{ 
+                animation: 'fade',
+                headerShown: false
+                 }}>
+                <Stack.Screen name="Home" component={HomeScreen} options={{
+                    title: 'Send Message',
+                    headerStyle: {
+                        backgroundColor: '#5E5C63',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }} />
+                <Stack.Screen name="Phrases" component={PhrasesScreen} options={{
+                    title: 'My Phrases',
+                    headerStyle: {
+                        backgroundColor: '#5E5C63',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }} />
+                <Stack.Screen name="Dictionary" component={DictionaryScreen} options={{
+                    title: 'Dictionary',
+                    headerStyle: {
+                        backgroundColor: '#5E5C63',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }} />
+                <Stack.Screen name="Settings" component={SettingsScreen} options={{
+                    title: 'Settings',
+                    headerStyle: {
+                        backgroundColor: '#5E5C63',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }} />
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
 };
 
 export default App;
