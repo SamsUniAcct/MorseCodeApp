@@ -19,28 +19,109 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import Torch from 'react-native-torch';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 
-
 const HomeScreen = ({ navigation }) => {
+
+    const sosCode = ['.', '.', '.', ',', '-', '-', '-', ',', '.', '.', '.'];
+
+    const torchOn = () => {
+        Torch.switchState(true);
+    };
+
+    const torchOff = () => {
+        Torch.switchState(false);
+    };
+
+    const [playing, setPlaying] = useState(false);
+
+    const [buttonColor, setButtonColor] = useState('#110F15');
+
+
+    const sendSOS = () => {
+        ToastAndroid.show('SOS code is ' + sosCode + ' !', ToastAndroid.LONG);
+        var dotspeed = 300;
+        var dashspeed = 800;
+        var commaspeed = 200;
+        var slashspeed = 300;
+        const playLoop = () => {
+            setPlaying(true);
+            setButtonColor('#232128');
+
+            let playloop = 0;
+            if (playloop <= sosCode.length) {
+
+                setTimeout(function run() {
+                    console.log('color change ' + playloop);
+                    torchOff();
+                    console.log('box up ^');
+                    console.log('the position ' + playloop + ' code is a ');
+                    if (sosCode[playloop] == '.') {
+                        setTimeout(function pause() {
+                            playloop++;
+                            console.log('.');
+                            torchOn();
+                            console.log('box down ^');
+                            setTimeout(run, dotspeed);
+                        }, 300);
+                    } else if (sosCode[playloop] == '-') {
+                        setTimeout(function pause() {
+                            playloop++;
+                            console.log('-');
+                            torchOn();
+                            console.log('box down ^');
+                            setTimeout(run, dashspeed);
+                        }, 300);
+                    } else if (sosCode[playloop] == ',') {
+                        setTimeout(function pause() {
+                            playloop++;
+                            console.log(',');
+                            torchOff();
+                            console.log('box up ^');
+                            setTimeout(run, commaspeed);
+                        }, 300);
+                    } else if (sosCode[playloop] == '/') {
+                        setTimeout(function pause() {
+                            playloop++;
+                            console.log('/');
+                            torchOff();
+                            console.log('box up ^');
+                            setTimeout(run, slashspeed);
+                        }, 300);
+                    } else {
+                        console.log('done!');
+                        setPlaying(false);
+                        setButtonColor('#110F15');
+                        return;
+                    }
+                }, 500);
+            } else {
+                console.log('it is done!');
+            }
+
+        };
+
+        playLoop();
+
+    };
 
     return (
         <View style={styles.mainContainer}>
             <View style={styles.header}>
-            
-                <TouchableHighlight name='SOS'  underlayColor="#5E5C63" >
+
+                <TouchableHighlight name='SOS' disabled={playing} onPress={sendSOS} underlayColor="#5E5C63" style={[styles.footerButton, { backgroundColor: buttonColor }]} >
                     <View >
                         <Text style={styles.footerButtonText}>SOS</Text>
                         <Icon name="flag" size={25} color="#4F8EF7" style={styles.footerButtonText} />
                     </View>
-                    
+
                 </TouchableHighlight>
             </View>
             <View style={styles.mainSection}>
                 <ScrollView>
-                     <Text style={{ fontSize: 96 }}>Test</Text>
-                     <Text style={{ fontSize: 96 }}>Test</Text>
-                     <Text style={{ fontSize: 96 }}>Test</Text>
-                     <Text style={{ fontSize: 96 }}>Test</Text>
-                     <Text style={{ fontSize: 96 }}>Test</Text>
+                    <Text style={{ fontSize: 96 }}>Test</Text>
+                    <Text style={{ fontSize: 96 }}>Test</Text>
+                    <Text style={{ fontSize: 96 }}>Test</Text>
+                    <Text style={{ fontSize: 96 }}>Test</Text>
+                    <Text style={{ fontSize: 96 }}>Test</Text>
                 </ScrollView>
             </View>
             <View style={styles.footer}>
