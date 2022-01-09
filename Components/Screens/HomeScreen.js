@@ -4,27 +4,49 @@
  * Home Screen
  */
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
+    Button,
+    ScrollView,
     StyleSheet,
     Text,
+    TextInput,
+    ToastAndroid,
     TouchableHighlight,
     View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
+import Torch from 'react-native-torch';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
+
 
 const HomeScreen = ({ navigation }) => {
 
     return (
         <View style={styles.mainContainer}>
             <View style={styles.header}>
-            </View>
-            <View style={styles.mainSection}>
-            </View>
-            <View style={styles.footer}>
-                <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.footerButton, { backgroundColor: '#110F15'}]}>
+            
+                <TouchableHighlight name='SOS'  underlayColor="#5E5C63" >
                     <View >
                         <Text style={styles.footerButtonText}>SOS</Text>
+                        <Icon name="flag" size={25} color="#4F8EF7" style={styles.footerButtonText} />
+                    </View>
+                    
+                </TouchableHighlight>
+            </View>
+            <View style={styles.mainSection}>
+                <ScrollView>
+                     <Text style={{ fontSize: 96 }}>Test</Text>
+                     <Text style={{ fontSize: 96 }}>Test</Text>
+                     <Text style={{ fontSize: 96 }}>Test</Text>
+                     <Text style={{ fontSize: 96 }}>Test</Text>
+                     <Text style={{ fontSize: 96 }}>Test</Text>
+                </ScrollView>
+            </View>
+            <View style={styles.footer}>
+                <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.footerButton, { backgroundColor: '#110F15' }]}>
+                    <View >
+                        <Text style={styles.footerButtonText}>Send</Text>
                         <Icon name="paper-plane" size={25} color="#4F8EF7" style={styles.footerButtonText} />
                     </View>
                 </TouchableHighlight>
@@ -58,7 +80,9 @@ const styles = StyleSheet.create({
     },
     header: {
         flex: 1,
-        backgroundColor: '#5E5C63'
+        backgroundColor: '#3D3B42',
+        paddingTop: 4,
+        paddingBottom: 4
     },
     mainSection: {
         flex: 4,

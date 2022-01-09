@@ -6,6 +6,7 @@
 
 import React from 'react';
 import {
+    Button,
     StyleSheet,
     Text,
     TouchableHighlight,
@@ -24,7 +25,7 @@ const PhrasesScreen = ({ navigation }) => {
             <View style={styles.footer}>
                 <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={styles.footerButton}>
                     <View >
-                        <Text style={styles.footerButtonText}>SOS</Text>
+                        <Text style={styles.footerButtonText}>Send</Text>
                         <Icon name="paper-plane" size={25} color="#4F8EF7" style={styles.footerButtonText} />
                     </View>
                 </TouchableHighlight>
