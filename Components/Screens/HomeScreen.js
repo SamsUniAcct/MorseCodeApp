@@ -4,7 +4,7 @@
  * Home Screen
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Button,
     ScrollView,
@@ -18,9 +18,112 @@ import {
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import Torch from 'react-native-torch';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const STORAGE_KEY = '@save_phrase_one';
+const STORAGE_KEY_TWO = '@save_phrase_two';
+const STORAGE_KEY_THREE = '@save_phrase_three';
+const STORAGE_KEY_FOUR = '@save_phrase_four';
 
 const HomeScreen = ({ navigation }) => {
 
+    //start of async sotrage code adapted from https://github.com/JscramblerBlog/rnAsyncStorageExample/blob/master/App.js
+    const [phraseOne, setPhraseOne] = useState('')
+
+    useEffect(() => {
+        readData()
+    }, [])
+
+    // read data
+    const readData = async () => {
+        try {
+            const phraseOne = await AsyncStorage.getItem(STORAGE_KEY)
+
+            if (phraseOne !== null) {
+                setPhraseOne(phraseOne)
+            }
+        } catch (e) {
+            alert('Failed to fetch the data from storage')
+        }
+    }
+
+    // save data
+
+    const saveData = async () => {
+        try {
+            await AsyncStorage.setItem(STORAGE_KEY, phraseOne)
+            setPhraseOne(phraseOne)
+            alert('Data successfully saved')
+        } catch (e) {
+            alert('Failed to save the data to the storage')
+        }
+    }
+
+    const clearStorage = async () => {
+        try {
+            await AsyncStorage.clear()
+            alert('Storage successfully cleared!')
+        } catch (e) {
+            alert('Failed to clear the async storage.')
+        }
+    }
+
+    const onChangeText = phraseOne => setPhraseOne(phraseOne)
+
+    const onSubmitEditing = () => {
+        if (!phraseOne) return
+        saveData(phraseOne)
+        setPhraseOne('')
+    };
+
+
+
+
+//start of async sotrage code adapted from https://github.com/JscramblerBlog/rnAsyncStorageExample/blob/master/App.js
+//button two
+const [phraseTwo, setPhraseTwo] = useState('')
+
+useEffect(() => {
+    readDataTwo()
+}, [])
+
+// read data
+const readDataTwo = async () => {
+    try {
+        const phraseTwo = await AsyncStorage.getItem(STORAGE_KEY_TWO)
+
+        if (phraseTwo !== null) {
+            setPhraseTwo(phraseTwo)
+        }
+    } catch (e) {
+        alert('Failed to fetch the data from storage')
+    }
+}
+
+// save data
+
+const saveDataTwo = async () => {
+    try {
+        await AsyncStorage.setItem(STORAGE_KEY_TWO, phraseTwo)
+        setPhraseTwo(phraseTwo)
+        alert('Data successfully saved')
+    } catch (e) {
+        alert('Failed to save the data to the storage')
+    }
+}
+
+
+
+const onChangeTextTwo = phraseTwo => setPhraseTwo(phraseTwo)
+
+const onSubmitEditingTwo = () => {
+    if (!phraseTwo) return
+    saveDataTwo(phraseTwo)
+    setPhraseTwo('')
+};
+
+
+    //start of SOS play code
     const sosCode = ['.', '.', '.', ',', '-', '-', '-', ',', '.', '.', '.'];
 
     const torchOn = () => {
@@ -116,176 +219,64 @@ const HomeScreen = ({ navigation }) => {
                 </TouchableHighlight>
             </View>
             <View style={styles.mainSection}>
+
                 <ScrollView >
+
                     <View style={styles.scrollSection}>
 
-                        <View style={styles.phraseButton}>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                <View >
-                                    <Text style={styles.phraseButtonText}>Phrase 1</Text>
-                                    <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
+                        <View>
+                            <TextInput
+                                style={styles.phraseButtonText}
+                                value={phraseOne}
+                                placeholder="Phrase"
+                                onChangeText={onChangeText}
+                                onSubmitEditing={onSubmitEditing}
+                            />
+                            <View style={styles.phraseButton}>
+                                <View style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
+                                    <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
+                                        <View >
+                                            <Text style={styles.phraseButtonText}>Play</Text>
+                                            <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
+                                        </View>
+                                    </TouchableHighlight>
+                                    <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
+                                        <View>
+                                            <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
+                                        </View>
+                                    </TouchableHighlight>
                                 </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                <View>
-                                    <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
+                            </View>
                         </View>
 
-                        <View style={styles.phraseButton}>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                <View >
-                                    <Text style={styles.phraseButtonText}>Phrase 2</Text>
-                                    <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
+
+                        <View>
+                            <TextInput
+                                style={styles.phraseButtonText}
+                                value={phraseTwo}
+                                placeholder="Phrase"
+                                onChangeText={onChangeTextTwo}
+                                onSubmitEditing={onSubmitEditingTwo}
+                            />
+                            <View style={styles.phraseButton}>
+                                <View style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
+                                    <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
+                                        <View >
+                                            <Text style={styles.phraseButtonText}>Play</Text>
+                                            <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
+                                        </View>
+                                    </TouchableHighlight>
+                                    <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
+                                        <View>
+                                            <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
+                                        </View>
+                                    </TouchableHighlight>
                                 </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                <View>
-                                    <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
+                            </View>
                         </View>
 
-                        <View style={styles.phraseButton}>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                <View >
-                                    <Text style={styles.phraseButtonText}>Phrase 3</Text>
-                                    <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                <View>
-                                    <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                        </View>
 
-                        <View style={styles.phraseButton}>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                <View >
-                                    <Text style={styles.phraseButtonText}>Phrase 4</Text>
-                                    <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                <View>
-                                    <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-
-                        <View style={styles.phraseButton}>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                <View >
-                                    <Text style={styles.phraseButtonText}>Phrase 5</Text>
-                                    <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                <View>
-                                    <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-
-                        <View style={styles.phraseButton}>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                <View >
-                                    <Text style={styles.phraseButtonText}>Phrase 6</Text>
-                                    <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                <View>
-                                    <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-
-                        <View style={styles.phraseButton}>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                <View >
-                                    <Text style={styles.phraseButtonText}>Phrase 7</Text>
-                                    <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                <View>
-                                    <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-
-                        <View style={styles.phraseButton}>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                <View >
-                                    <Text style={styles.phraseButtonText}>Phrase 8</Text>
-                                    <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                <View>
-                                    <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-
-                        <View style={styles.phraseButton}>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                <View >
-                                    <Text style={styles.phraseButtonText}>Phrase 9</Text>
-                                    <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                <View>
-                                    <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-
-                        <View style={styles.phraseButton}>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                <View >
-                                    <Text style={styles.phraseButtonText}>Phrase 10</Text>
-                                    <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                <View>
-                                    <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-
-                        <View style={styles.phraseButton}>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                <View >
-                                    <Text style={styles.phraseButtonText}>Phrase 11</Text>
-                                    <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                <View>
-                                    <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                        </View>
-
-                        <View style={styles.phraseButton}>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                <View >
-                                    <Text style={styles.phraseButtonText}>Phrase 12</Text>
-                                    <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                <View>
-                                    <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                </View>
-                            </TouchableHighlight>
-                        </View>
+                        
 
                     </View>
                 </ScrollView>
@@ -338,7 +329,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#3D3B42',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingTop: 4,
+        paddingTop: 8,
         paddingBottom: 8
     },
     footer: {
@@ -373,13 +364,13 @@ const styles = StyleSheet.create({
     scrollSection: {
         flex: 1,
         backgroundColor: '#3D3B42',
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'space-around',
         paddingTop: 4,
         flexWrap: 'wrap'
     },
     phraseButton: {
-        width: '45%',
+
         height: 100,
         justifyContent: 'space-evenly',
         alignItems: 'center',
@@ -402,7 +393,7 @@ const styles = StyleSheet.create({
         flexBasis: 'auto'
     },
     phraseButtonLeft: {
-        width: '85%',
+        width: '100%',
         height: '100%',
         justifyContent: 'space-evenly',
         alignItems: 'center',
@@ -427,6 +418,9 @@ const styles = StyleSheet.create({
         flexWrap: 'nowrap',
         backgroundColor: '#423532'
     },
+    phraseInput: {
+        alignItems: 'center'
+    }
 });
 
 export default HomeScreen;
