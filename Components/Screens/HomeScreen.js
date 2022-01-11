@@ -4,9 +4,10 @@
  * Home Screen
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     Button,
+    Keyboard,
     ScrollView,
     StyleSheet,
     Text,
@@ -20,107 +21,128 @@ import Torch from 'react-native-torch';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const STORAGE_KEY = '@save_phrase_one';
-const STORAGE_KEY_TWO = '@save_phrase_two';
-const STORAGE_KEY_THREE = '@save_phrase_three';
-const STORAGE_KEY_FOUR = '@save_phrase_four';
 
-const HomeScreen = ({ navigation }) => {
 
-    //start of async sotrage code adapted from https://github.com/JscramblerBlog/rnAsyncStorageExample/blob/master/App.js
-    const [phraseOne, setPhraseOne] = useState('')
+const getAllKeys = async () => {
+    let keys = []
+    try {
+        keys = await AsyncStorage.getAllKeys()
+    } catch (e) {
+        // read key error
+    }
 
+    alert(keys)
+    // example console.log result:
+    // ['@MyApp_user', '@MyApp_key']
+}
+
+const Phrase = (props) => {
+
+    const [phrase, setPhrase] = useState('')
+    const key = props.name
+    const [isEditMode, setEditMode] = useState(false)
+    const [defaultStyle, setDefaultStyle] = useState(true)
+    const [buttonPhrase, setButtonPhrase] = useState('')
+
+    //start of async storage code adapted from https://github.com/JscramblerBlog/rnAsyncStorageExample/blob/master/App.js
     useEffect(() => {
-        readData()
+        getData()
     }, [])
 
-    // read data
-    const readData = async () => {
+    const storeData = async () => {
         try {
-            const phraseOne = await AsyncStorage.getItem(STORAGE_KEY)
+            await AsyncStorage.setItem(key, phrase)
+            alert('Phrase successfully stored')
+        } catch (e) {
+            // saving error
+            alert('Failed to save the phrase to the storage')
+        }
+    }
 
-            if (phraseOne !== null) {
-                setPhraseOne(phraseOne)
+    const getData = async () => {
+        try {
+            const phrase = await AsyncStorage.getItem(key)
+            if (phrase !== null) {
+                // value previously stored
+                setButtonPhrase(phrase)
+                alert('Loaded data from storage')
+            } else {
+                alert('No data')
             }
         } catch (e) {
+            // error reading value
             alert('Failed to fetch the data from storage')
         }
     }
 
-    // save data
-
-    const saveData = async () => {
-        try {
-            await AsyncStorage.setItem(STORAGE_KEY, phraseOne)
-            setPhraseOne(phraseOne)
-            alert('Data successfully saved')
-        } catch (e) {
-            alert('Failed to save the data to the storage')
-        }
-    }
-
-    const clearStorage = async () => {
-        try {
-            await AsyncStorage.clear()
-            alert('Storage successfully cleared!')
-        } catch (e) {
-            alert('Failed to clear the async storage.')
-        }
-    }
-
-    const onChangeText = phraseOne => setPhraseOne(phraseOne)
+    const onChangeText = phrase => setPhrase(phrase)
 
     const onSubmitEditing = () => {
-        if (!phraseOne) return
-        saveData(phraseOne)
-        setPhraseOne('')
-    };
+        if (!phrase) return
+        setButtonPhrase(phrase)
+        storeData(phrase)
+        setEditMode(false)
+        setDefaultStyle(true)
+        setPhrase('')
+    }
 
+    //end of adapted code
 
-
-
-//start of async sotrage code adapted from https://github.com/JscramblerBlog/rnAsyncStorageExample/blob/master/App.js
-//button two
-const [phraseTwo, setPhraseTwo] = useState('')
-
-useEffect(() => {
-    readDataTwo()
-}, [])
-
-// read data
-const readDataTwo = async () => {
-    try {
-        const phraseTwo = await AsyncStorage.getItem(STORAGE_KEY_TWO)
-
-        if (phraseTwo !== null) {
-            setPhraseTwo(phraseTwo)
+    const editMode = () => {
+        if (!isEditMode) {
+            setEditMode(true)
+            setDefaultStyle(false)
+        } else {
+            setEditMode(false)
+            setDefaultStyle(true)
         }
-    } catch (e) {
-        alert('Failed to fetch the data from storage')
     }
+
+    
+    return (
+        <View>
+            <TextInput
+                style={[defaultStyle ? styles.phraseButtonText && styles.phraseInputDefault : styles.phraseInputEdit]}
+                value={buttonPhrase}
+                defaultValue={buttonPhrase}
+                placeholder="Phrase"
+                onChangeText={onChangeText}
+                onSubmitEditing={onSubmitEditing}
+                editable={isEditMode}
+
+            />
+            <View style={styles.phraseButton}>
+                <View style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
+                    <TouchableHighlight onPress={editMode} disabled={isEditMode || !phrase} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
+                        <View >
+                            <Text style={styles.phraseButtonText}>Phrase 1: {buttonPhrase}</Text>
+                            <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
+                        </View>
+                    </TouchableHighlight>
+                </View>
+                <View style={[styles.phraseButtonContainerRight, { backgroundColor: '#110F15' }]}>
+                    <TouchableHighlight onPress={editMode} underlayColor="#5E5C63" style={[styles.phraseButtonRightEdit]}>
+                        <View>
+                            <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
+                        </View>
+                    </TouchableHighlight>
+                    <TouchableHighlight onPress={editMode} underlayColor="#5E5C63" style={[styles.phraseButtonRightRemove]}>
+                        <View>
+                            <Icon name="trash" size={25} color="#4F8EF7" style={styles.footerButtonText} />
+                        </View>
+                    </TouchableHighlight>
+                </View>
+
+
+            </View>
+
+
+
+        </View>
+    );
 }
 
-// save data
-
-const saveDataTwo = async () => {
-    try {
-        await AsyncStorage.setItem(STORAGE_KEY_TWO, phraseTwo)
-        setPhraseTwo(phraseTwo)
-        alert('Data successfully saved')
-    } catch (e) {
-        alert('Failed to save the data to the storage')
-    }
-}
-
-
-
-const onChangeTextTwo = phraseTwo => setPhraseTwo(phraseTwo)
-
-const onSubmitEditingTwo = () => {
-    if (!phraseTwo) return
-    saveDataTwo(phraseTwo)
-    setPhraseTwo('')
-};
+const HomeScreen = ({ navigation }) => {
 
 
     //start of SOS play code
@@ -206,11 +228,12 @@ const onSubmitEditingTwo = () => {
 
     };
 
+
     return (
         <View style={styles.mainContainer}>
             <View style={styles.header}>
 
-                <TouchableHighlight name='SOS' disabled={playing} onPress={sendSOS} underlayColor="#5E5C63" style={[styles.footerButton, { backgroundColor: buttonColor }]} >
+                <TouchableHighlight name='SOS' disabled={playing} onPress={getAllKeys} underlayColor="#5E5C63" style={[styles.footerButton, { backgroundColor: buttonColor }]} >
                     <View >
                         <Text style={styles.footerButtonText}>SOS</Text>
                         <Icon name="flag" size={25} color="#4F8EF7" style={styles.footerButtonText} />
@@ -224,59 +247,13 @@ const onSubmitEditingTwo = () => {
 
                     <View style={styles.scrollSection}>
 
-                        <View>
-                            <TextInput
-                                style={styles.phraseButtonText}
-                                value={phraseOne}
-                                placeholder="Phrase"
-                                onChangeText={onChangeText}
-                                onSubmitEditing={onSubmitEditing}
-                            />
-                            <View style={styles.phraseButton}>
-                                <View style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                    <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                        <View >
-                                            <Text style={styles.phraseButtonText}>Play</Text>
-                                            <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                        </View>
-                                    </TouchableHighlight>
-                                    <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                        <View>
-                                            <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                        </View>
-                                    </TouchableHighlight>
-                                </View>
-                            </View>
-                        </View>
+                        <Phrase name="phraseOne" />
 
 
-                        <View>
-                            <TextInput
-                                style={styles.phraseButtonText}
-                                value={phraseTwo}
-                                placeholder="Phrase"
-                                onChangeText={onChangeTextTwo}
-                                onSubmitEditing={onSubmitEditingTwo}
-                            />
-                            <View style={styles.phraseButton}>
-                                <View style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                    <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                                        <View >
-                                            <Text style={styles.phraseButtonText}>Play</Text>
-                                            <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                        </View>
-                                    </TouchableHighlight>
-                                    <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.phraseButtonRight]}>
-                                        <View>
-                                            <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                                        </View>
-                                    </TouchableHighlight>
-                                </View>
-                            </View>
-                        </View>
+                        <Phrase name="phraseTwo" />
 
 
-                        
+
 
                     </View>
                 </ScrollView>
@@ -393,33 +370,75 @@ const styles = StyleSheet.create({
         flexBasis: 'auto'
     },
     phraseButtonLeft: {
-        width: '100%',
+        width: '85%',
         height: '100%',
         justifyContent: 'space-evenly',
         alignItems: 'center',
         flexDirection: 'row',
 
-        flexGrow: 0,
-        flexShrink: 1,
+        flexGrow: 1,
+        flexShrink: 0,
         flexBasis: 'auto',
         flexWrap: 'nowrap',
         backgroundColor: '#232128'
     },
-    phraseButtonRight: {
+    phraseButtonContainerRight: {
         width: '15%',
         height: '100%',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        flexDirection: 'row',
+        flexDirection: 'column',
 
-        flexGrow: 0,
-        flexShrink: 1,
+        flexGrow: 1,
+        flexShrink: 0,
         flexBasis: 'auto',
         flexWrap: 'nowrap',
         backgroundColor: '#423532'
     },
-    phraseInput: {
-        alignItems: 'center'
+    phraseButtonRightEdit: {
+        width: '100%',
+        //height: '100%',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        flexDirection: 'row',
+
+        flexGrow: 1,
+        flexShrink: 0,
+        flexBasis: 'auto',
+        flexWrap: 'nowrap',
+        backgroundColor: '#423532'
+    },
+    phraseButtonRightRemove: {
+        width: '100%',
+        //height: '100%',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        flexDirection: 'row',
+
+        flexGrow: 1,
+        flexShrink: 0,
+        flexBasis: 'auto',
+        flexWrap: 'nowrap',
+        backgroundColor: '#423532'
+    },
+    phraseInputDefault: {
+        color: 'white',
+        alignSelf: 'center',
+        flexGrow: 0,
+        flexShrink: 1,
+        paddingBottom: 4,
+        flexBasis: 'auto',
+        backgroundColor: '#3D3B42'
+    },
+    phraseInputEdit: {
+        color: 'black',
+        alignSelf: 'center',
+        flexGrow: 0,
+        flexShrink: 1,
+        paddingBottom: 4,
+        flexBasis: 'auto',
+
+        backgroundColor: 'white'
     }
 });
 

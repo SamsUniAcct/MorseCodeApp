@@ -6,20 +6,42 @@
 
 import React from 'react';
 import {
+    Button,
     StyleSheet,
     Text,
     TouchableHighlight,
     View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
 
 const SettingsScreen = ({ navigation }) => {
+
+
+    const clearStorage = async () => {
+        
+        try {
+          await AsyncStorage.clear()
+          alert('Storage successfully cleared!')
+        } catch (e) {
+          alert('Failed to clear the async storage.')
+        }
+      }
+
+
 
     return (
         <View style={styles.mainContainer}>
             <View style={styles.header}>
             </View>
             <View style={styles.mainSection}>
+            <Button
+        onPress={clearStorage}
+        
+        title={"Clear"}
+      />
             </View>
             <View style={styles.footer}>
                 <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={styles.footerButton}>

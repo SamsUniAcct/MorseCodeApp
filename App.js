@@ -10,16 +10,28 @@ import HomeScreen from './Components/Screens/HomeScreen';
 import PhrasesScreen from './Components/Screens/PhrasesScreen';
 import DictionaryScreen from './Components/Screens/DictionaryScreen';
 import SettingsScreen from './Components/Screens/SettingsScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 
+const clearStorage = async () => {
+    try {
+        await AsyncStorage.clear()
+        alert('Storage successfully cleared!')
+    } catch (e) {
+        alert('Failed to clear the async storage.')
+    }
+}
+
 const App = () => {
     return (
+
         <NavigationContainer>
-            <Stack.Navigator screenOptions={{ 
+
+            <Stack.Navigator screenOptions={{
                 animation: 'fade',
                 headerShown: false
-                 }}>
+            }}>
                 <Stack.Screen name="Home" component={HomeScreen} options={{
                     title: 'Send Message',
                     headerStyle: {
