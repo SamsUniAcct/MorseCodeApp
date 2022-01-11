@@ -65,6 +65,8 @@ const Phrase = (props) => {
             if (phrase !== null) {
                 // value previously stored
                 setButtonPhrase(phrase)
+                setPhrase(phrase)
+                morsemaker(phrase)
                 alert('Loaded data from storage')
             } else {
                 alert('No data')
@@ -82,8 +84,9 @@ const Phrase = (props) => {
         setButtonPhrase(phrase)
         storeData(phrase)
         setEditMode(false)
+        morsemaker(phrase)
         setDefaultStyle(true)
-        setPhrase('')
+        //setPhrase('')
     }
 
     //end of adapted code
@@ -98,14 +101,195 @@ const Phrase = (props) => {
         }
     }
 
+
+
+
+    //play code test
+    const playCode = () => {
+        //this.
+    };
+
+
+
+    // morse code converter 
+    const dot = '.';
+    const dash = '-';
+    const space = ' ';
+    const morseText = []
+
+
+
+    const chars = {
+        'A': '01', 'B': '1000', 'C': '1010', 'D': '100', 'E': '0', 'F': '0010',
+        'G': '110', 'H': '0000', 'I': '00', 'J': '0111', 'K': '101', 'L': '0100',
+        'M': '11', 'N': '10', 'O': '111', 'P': '0110', 'Q': '1101', 'R': '010',
+        'S': '000', 'T': '1', 'U': '001', 'V': '0001', 'W': '011', 'X': '1001',
+        'Y': '1011', 'Z': '1100', ' ': '/', '0': '11111', '1': '01111', '2': '00111', '3': '00011', '4': '00001',
+        '5': '00000', '6': '10000', '7': '11000', '8': '11100', '9': '11110', '.': '010101', ',': '110011', '?': '001100', '\'': '011110', '!': '101011', '/': '10010',
+        '(': '10110', ')': '101101', '&': '01000', ':': '111000', ';': '101010', '=': '10001',
+        '+': '01010', '-': '100001', '_': '001101', '"': '010010', '$': '0001001', '@': '011010',
+        '¿': '00101', '¡': '110001'
+    }
+
+    const [codeArray] = useState([])
+    const [codeForPlay, setCodeForPlay] = useState('')
+    //const [codeArrayStr, setCodeArrayStr] = useState('')
+    //const codeArray = [];
+    const setted = {};
+
+    function turnTextIntoCode() {
+        // codeArray = [];
+        for (let l = 0; l < morseText.length; l++) {
+            codeArray[l] = morseText[l].replace(/0/g, dot).replace(/1/g, dash);
+        }
+
+        return codeArray;
+    };
+
+    // function makeCodeArrayStr() {
+    //     setCodeArrayStr(String(codeArray))
+    // //    alert(codeArrayStr)
+    //     return codeArrayStr;
+    // };
+
+
+    const morsemaker = (phrase) => {
+        alert(String(phrase));
+        const userMorse = String(phrase).toUpperCase();
+        //userMorse = document.getElementById("userMorse").value.toUpperCase();
+
+        //document.getElementById("users").innerHTML = userMorse;
+
+        //alert(userMorse)
+        //alert(codeForPlay)
+        const morseLength = userMorse.length;
+        const text = "";
+        //  const morseText = [];
+        for (let i = 0; i < userMorse.length; i++) {
+
+            console.log('text is ' + userMorse[i] + text);
+            var j = 0;
+            while (j < Object.values(chars).length) {
+
+                console.log('char in map is ' + Object.keys(chars)[j]);
+                if (userMorse[i] == Object.keys(chars)[j]) {
+                    morseText[i] = Object.values(chars)[j];
+                    //alert('char and map match! Adding morse to text.  Morse text currently is ' + morseText + '.');
+                    break;
+                }
+                j++;
+            };
+
+        }
+
+        turnTextIntoCode();
+    //    makeCodeArrayStr();
+       // alert(codeArrayStr)
+        var codeArrayStr = String(codeArray);
+        // const  codeArrayReadable = codeArrayStr.replace(/,/g, space);
+        // document.getElementById("loc").innerHTML = codeArrayReadable;
+        //ToastAndroid.show('Morse code for ' + userMorse + ' is: ' + codeArrayReadable + ' !', ToastAndroid.LONG);
+        //codeForPlay = codeArrayStr.split('')
+        // codeForPlay = codeArrayStr.split('')
+     //   ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
+     ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
+         //   playBox();
+        return codeArrayStr;
+    }
+
     
+
+
+
+    function playBox(codeArrayStr) {
+ //alert(codeArrayStr);
+        //ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
+        playLoop(codeArrayStr);
+
+    }
+
+    const torchOn = () => {
+        Torch.switchState(true);
+    };
+
+    const torchOff = () => {
+        Torch.switchState(false);
+    };
+
+
+
+
+    function playLoop(codeArrayStr) {
+        const dotspeed = 300;
+        const dashspeed = 800;
+        const commaspeed = 200;
+        const slashspeed = 300;
+        let playloop = 0;
+
+        if (playloop <= codeArrayStr.length) {
+
+            setTimeout(function run() {
+                console.log('color change ' + playloop);
+                torchOff();
+                console.log('box up ^');
+                console.log('the position ' + playloop + ' code is a ');
+                if (codeArrayStr[playloop] == '.') {
+                    setTimeout(function pause() {
+                        playloop++;
+                        console.log('.');
+                        torchOn();
+                        console.log('box down ^');
+                        setTimeout(run, dotspeed);
+                    }, 300);
+                } else if (codeArrayStr[playloop] == '-') {
+                    setTimeout(function pause() {
+                        playloop++;
+                        console.log('-');
+                        torchOn();
+                        console.log('box down ^');
+                        setTimeout(run, dashspeed);
+                    }, 300);
+                } else if (codeArrayStr[playloop] == ',') {
+                    setTimeout(function pause() {
+                        playloop++;
+                        console.log(',');
+                        torchOff();
+                        console.log('box up ^');
+                        setTimeout(run, commaspeed);
+                    }, 300);
+                } else if (codeArrayStr[playloop] == '/') {
+                    setTimeout(function pause() {
+                        playloop++;
+                        console.log('/');
+                        torchOff();
+                        console.log('box up ^');
+                        setTimeout(run, slashspeed);
+                    }, 300);
+                } else {
+                    console.log('done!');
+                    return;
+                }
+
+            }, 500);
+        } else {
+            console.log('it is done!');
+        }
+
+    }
+
+    function runMorse() {
+        
+        playBox(morsemaker(phrase));
+    }
+
+
     return (
         <View>
             <TextInput
                 style={[defaultStyle ? styles.phraseButtonText && styles.phraseInputDefault : styles.phraseInputEdit]}
-                value={buttonPhrase}
-                defaultValue={buttonPhrase}
-                placeholder="Phrase"
+                value={phrase}
+                //defaultValue={buttonPhrase}
+                placeholder='enter phrase'
                 onChangeText={onChangeText}
                 onSubmitEditing={onSubmitEditing}
                 editable={isEditMode}
@@ -113,7 +297,7 @@ const Phrase = (props) => {
             />
             <View style={styles.phraseButton}>
                 <View style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                    <TouchableHighlight onPress={editMode} disabled={isEditMode || !phrase} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
+                    <TouchableHighlight onPress={runMorse} disabled={isEditMode || !buttonPhrase} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
                         <View >
                             <Text style={styles.phraseButtonText}>Phrase 1: {buttonPhrase}</Text>
                             <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
