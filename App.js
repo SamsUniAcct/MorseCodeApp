@@ -28,20 +28,10 @@ const App = () => {
 
         <NavigationContainer>
 
-            <Stack.Navigator screenOptions={{
+            <Stack.Navigator initialRouteName='Home' screenOptions={{
                 animation: 'fade',
                 headerShown: false
             }}>
-                <Stack.Screen name="Home" component={HomeScreen} options={{
-                    title: 'Send Message',
-                    headerStyle: {
-                        backgroundColor: '#5E5C63',
-                    },
-                    headerTintColor: '#fff',
-                    headerTitleStyle: {
-                        fontWeight: 'bold',
-                    },
-                }} />
                 <Stack.Screen name="Phrases" component={PhrasesScreen} options={{
                     title: 'My Phrases',
                     headerStyle: {
@@ -52,6 +42,17 @@ const App = () => {
                         fontWeight: 'bold',
                     },
                 }} />
+                <Stack.Screen name="Home" component={HomeScreen} options={{
+                    title: 'Send Message',
+                    headerStyle: {
+                        backgroundColor: '#5E5C63',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }} />
+                
                 <Stack.Screen name="Dictionary" component={DictionaryScreen} options={{
                     title: 'Dictionary',
                     headerStyle: {

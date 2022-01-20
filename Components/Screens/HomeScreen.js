@@ -23,6 +23,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
+const comingSoon = () => {
+    ToastAndroid.show('Coming in a future update', ToastAndroid.LONG);
+}
+
 const getAllKeys = async () => {
     let keys = []
     try {
@@ -36,13 +40,19 @@ const getAllKeys = async () => {
     // ['@MyApp_user', '@MyApp_key']
 }
 
+
+
 const Phrase = (props) => {
 
     const [phrase, setPhrase] = useState('')
     const key = props.name
-    const [isEditMode, setEditMode] = useState(false)
-    const [defaultStyle, setDefaultStyle] = useState(true)
     const [buttonPhrase, setButtonPhrase] = useState('')
+    const [buttonColor, setButtonColor] = useState('#110F15')
+
+    // const [isEditMode, setEditMode] = useState(false)
+    const [defaultStyle, setDefaultStyle] = useState(true)
+
+
 
     //start of async storage code adapted from https://github.com/JscramblerBlog/rnAsyncStorageExample/blob/master/App.js
     useEffect(() => {
@@ -59,6 +69,7 @@ const Phrase = (props) => {
         }
     }
 
+
     const getData = async () => {
         try {
             const phrase = await AsyncStorage.getItem(key)
@@ -66,41 +77,25 @@ const Phrase = (props) => {
                 // value previously stored
                 setButtonPhrase(phrase)
                 setPhrase(phrase)
-                morsemaker(phrase)
-                alert('Loaded data from storage')
+              //  morsemaker(phrase)
+                console.log('Loaded data from storage');
+                return true;
             } else {
-                alert('No data')
-            }
+                console.log('No data')
+                return false;
+            } return;
         } catch (e) {
             // error reading value
-            alert('Failed to fetch the data from storage')
-        }
+            console.log('Failed to fetch the data from storage or already read')
+            return false;
+        } return;
     }
 
-    const onChangeText = phrase => setPhrase(phrase)
-
-    const onSubmitEditing = () => {
-        if (!phrase) return
-        setButtonPhrase(phrase)
-        storeData(phrase)
-        setEditMode(false)
-        morsemaker(phrase)
-        setDefaultStyle(true)
-        //setPhrase('')
-    }
 
     //end of adapted code
 
-    const editMode = () => {
-        if (!isEditMode) {
-            setEditMode(true)
-            setDefaultStyle(false)
-        } else {
-            setEditMode(false)
-            setDefaultStyle(true)
-        }
-    }
 
+    
 
 
 
@@ -154,7 +149,7 @@ const Phrase = (props) => {
 
 
     const morsemaker = (phrase) => {
-        alert(String(phrase));
+        //alert(String(phrase));
         const userMorse = String(phrase).toUpperCase();
         //userMorse = document.getElementById("userMorse").value.toUpperCase();
 
@@ -192,7 +187,7 @@ const Phrase = (props) => {
         //codeForPlay = codeArrayStr.split('')
         // codeForPlay = codeArrayStr.split('')
         //   ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
-        ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
+
         //   playBox();
         return codeArrayStr;
     }
@@ -225,10 +220,17 @@ const Phrase = (props) => {
         const commaspeed = 200;
         const slashspeed = 300;
         let playloop = 0;
+        // setPlaying(true);
+        // setButtonColor('#232128');
+
+        ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
+
+
 
         if (playloop <= codeArrayStr.length) {
 
             setTimeout(function run() {
+
                 console.log('color change ' + playloop);
                 torchOff();
                 console.log('box up ^');
@@ -267,7 +269,9 @@ const Phrase = (props) => {
                     }, 300);
                 } else {
                     console.log('done!');
-                    return;
+                    //     setPlaying(false);
+                    // setButtonColor('#110F15');
+
                 }
 
             }, 500);
@@ -285,37 +289,17 @@ const Phrase = (props) => {
 
     return (
         <View>
-            <TextInput
-                style={[defaultStyle ? styles.phraseButtonText && styles.phraseInputDefault : styles.phraseInputEdit]}
-                value={phrase}
-                //defaultValue={buttonPhrase}
-                placeholder='enter phrase'
-                onChangeText={onChangeText}
-                onSubmitEditing={onSubmitEditing}
-                editable={isEditMode}
 
-            />
             <View style={styles.phraseButton}>
                 <View style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                    <TouchableHighlight onPress={runMorse} disabled={isEditMode || !buttonPhrase} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
+                    <TouchableHighlight onPress={runMorse} disabled={!buttonPhrase} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: buttonPhrase ? '#110F15' : '#232128' }]}>
                         <View >
-                            <Text style={styles.phraseButtonText}>Phrase 1: {buttonPhrase}</Text>
+                            <Text style={styles.phraseButtonText}>Phrase {props.phraseNumber}: {buttonPhrase}</Text>
                             <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
                         </View>
                     </TouchableHighlight>
                 </View>
-                <View style={[styles.phraseButtonContainerRight, { backgroundColor: '#110F15' }]}>
-                    <TouchableHighlight onPress={editMode} underlayColor="#5E5C63" style={[styles.phraseButtonRightEdit]}>
-                        <View>
-                            <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                        </View>
-                    </TouchableHighlight>
-                    <TouchableHighlight onPress={editMode} underlayColor="#5E5C63" style={[styles.phraseButtonRightRemove]}>
-                        <View>
-                            <Icon name="trash" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-                        </View>
-                    </TouchableHighlight>
-                </View>
+
 
 
             </View>
@@ -326,7 +310,14 @@ const Phrase = (props) => {
     );
 }
 
+
 const HomeScreen = ({ navigation }) => {
+
+    const [playing, setPlaying] = useState(false);
+
+    const [buttonColor, setButtonColor] = useState('#110F15');
+
+
 
 
     //start of SOS play code
@@ -340,23 +331,24 @@ const HomeScreen = ({ navigation }) => {
         Torch.switchState(false);
     };
 
-    const [playing, setPlaying] = useState(false);
 
-    const [buttonColor, setButtonColor] = useState('#110F15');
 
 
     const sendSOS = () => {
+
         ToastAndroid.show('SOS code is ' + sosCode + ' !', ToastAndroid.LONG);
         var dotspeed = 300;
         var dashspeed = 800;
         var commaspeed = 200;
         var slashspeed = 300;
-        const playLoop = () => {
+        const sosLoop = () => {
             setPlaying(true);
             setButtonColor('#232128');
 
             let playloop = 0;
             if (playloop <= sosCode.length) {
+
+
 
                 setTimeout(function run() {
                     console.log('color change ' + playloop);
@@ -399,7 +391,10 @@ const HomeScreen = ({ navigation }) => {
                         console.log('done!');
                         setPlaying(false);
                         setButtonColor('#110F15');
-                        return;
+                        console.log('please!');
+
+                        console.log('thank you!');
+
                     }
                 }, 500);
             } else {
@@ -408,7 +403,7 @@ const HomeScreen = ({ navigation }) => {
 
         };
 
-        playLoop();
+        sosLoop();
 
     };
 
@@ -417,7 +412,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.mainContainer}>
             <View style={styles.header}>
 
-                <TouchableHighlight name='SOS' disabled={playing} onPress={getAllKeys} underlayColor="#5E5C63" style={[styles.footerButton, { backgroundColor: buttonColor }]} >
+                <TouchableHighlight name='SOS' disabled={playing} onPress={sendSOS} underlayColor="#5E5C63" style={[styles.footerButton, { backgroundColor: buttonColor }]} >
                     <View >
                         <Text style={styles.footerButtonText}>SOS</Text>
                         <Icon name="flag" size={25} color="#4F8EF7" style={styles.footerButtonText} />
@@ -431,25 +426,25 @@ const HomeScreen = ({ navigation }) => {
 
                     <View style={styles.scrollSection}>
 
-                        <Phrase name="phraseOne" />
+                        <Phrase name="phraseOne" phraseNumber="1" disabled={playing} />
 
-                        <Phrase name="phraseTwo" />
+                        <Phrase name="phraseTwo" phraseNumber="2" />
 
-                        <Phrase name="phraseThree" />
+                        <Phrase name="phraseThree" phraseNumber="3" />
 
-                        <Phrase name="phraseFour" />
+                        <Phrase name="phraseFour" phraseNumber="4" />
 
-                        <Phrase name="phraseFive" />
+                        <Phrase name="phraseFive" phraseNumber="5" />
 
-                        <Phrase name="phraseSix" />
+                        <Phrase name="phraseSix" phraseNumber="6" />
 
-                        <Phrase name="phraseSeven" />
+                        <Phrase name="phraseSeven" phraseNumber="7" />
 
-                        <Phrase name="phraseEight" />
+                        <Phrase name="phraseEight" phraseNumber="8" />
 
-                        <Phrase name="phraseNine" />
+                        <Phrase name="phraseNine" phraseNumber="9" />
 
-                        <Phrase name="phraseTen" />
+                        <Phrase name="phraseTen" phraseNumber="10" />
 
 
                     </View>
@@ -457,26 +452,26 @@ const HomeScreen = ({ navigation }) => {
 
             </View>
             <View style={styles.footer}>
-                <TouchableHighlight onPress={() => navigation.navigate('Home')} underlayColor="#5E5C63" style={[styles.footerButton, { backgroundColor: '#110F15' }]}>
+                <TouchableHighlight onPress={() => navigation.push('Home')} underlayColor="#5E5C63" style={[styles.footerButton, { backgroundColor: '#110F15' }]}>
                     <View >
                         <Text style={styles.footerButtonText}>Send</Text>
                         <Icon name="paper-plane" size={25} color="#4F8EF7" style={styles.footerButtonText} />
 
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight onPress={() => navigation.navigate('Phrases')} underlayColor="#5E5C63" style={styles.footerButton}>
+                <TouchableHighlight onPress={() => navigation.push('Phrases')} underlayColor="#5E5C63" style={styles.footerButton}>
                     <View >
                         <Text style={styles.footerButtonText}>Phrases</Text>
                         <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight onPress={() => navigation.navigate('Dictionary')} underlayColor="#5E5C63" style={styles.footerButton}>
+                <TouchableHighlight onPress={() => navigation.push('Dictionary')} underlayColor="#5E5C63" style={styles.footerButton}>
                     <View >
                         <Text style={styles.footerButtonText}>Dictionary</Text>
                         <Icon name="book-open" size={25} color="#4F8EF7" style={styles.footerButtonText} />
                     </View>
                 </TouchableHighlight>
-                <TouchableHighlight onPress={() => navigation.navigate('Settings')} underlayColor="#5E5C63" style={styles.footerButton}>
+                <TouchableHighlight onPress={() => navigation.push('Settings')} underlayColor="#5E5C63" style={styles.footerButton}>
                     <View >
                         <Text style={styles.footerButtonText}>Settings</Text>
                         <Icon name="settings" size={25} color="#4F8EF7" style={styles.footerButtonText} />
@@ -567,7 +562,7 @@ const styles = StyleSheet.create({
         flexBasis: 'auto'
     },
     phraseButtonLeft: {
-        width: '85%',
+        width: '100%',
         height: '100%',
         justifyContent: 'space-evenly',
         alignItems: 'center',
