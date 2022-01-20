@@ -183,26 +183,26 @@ const Phrase = (props) => {
         }
 
         turnTextIntoCode();
-    //    makeCodeArrayStr();
-       // alert(codeArrayStr)
+        //    makeCodeArrayStr();
+        // alert(codeArrayStr)
         var codeArrayStr = String(codeArray);
         // const  codeArrayReadable = codeArrayStr.replace(/,/g, space);
         // document.getElementById("loc").innerHTML = codeArrayReadable;
         //ToastAndroid.show('Morse code for ' + userMorse + ' is: ' + codeArrayReadable + ' !', ToastAndroid.LONG);
         //codeForPlay = codeArrayStr.split('')
         // codeForPlay = codeArrayStr.split('')
-     //   ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
-     ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
-         //   playBox();
+        //   ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
+        ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
+        //   playBox();
         return codeArrayStr;
     }
 
-    
+
 
 
 
     function playBox(codeArrayStr) {
- //alert(codeArrayStr);
+        //alert(codeArrayStr);
         //ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
         playLoop(codeArrayStr);
 
@@ -278,7 +278,7 @@ const Phrase = (props) => {
     }
 
     function runMorse() {
-        
+
         playBox(morsemaker(phrase));
     }
 
@@ -433,10 +433,23 @@ const HomeScreen = ({ navigation }) => {
 
                         <Phrase name="phraseOne" />
 
-
                         <Phrase name="phraseTwo" />
 
+                        <Phrase name="phraseThree" />
 
+                        <Phrase name="phraseFour" />
+
+                        <Phrase name="phraseFive" />
+
+                        <Phrase name="phraseSix" />
+
+                        <Phrase name="phraseSeven" />
+
+                        <Phrase name="phraseEight" />
+
+                        <Phrase name="phraseNine" />
+
+                        <Phrase name="phraseTen" />
 
 
                     </View>
