@@ -16,11 +16,7 @@ import {
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
-
 const SettingsScreen = ({ navigation }) => {
-
-
 
     const comingSoon = () => {
         ToastAndroid.showWithGravityAndOffset('More settings coming in a future update', ToastAndroid.LONG, ToastAndroid.TOP, 0, 60);
@@ -30,31 +26,15 @@ const SettingsScreen = ({ navigation }) => {
         comingSoon()
       }, [])
 
-
     const clearStorage = async () => {
-        
         try {
           await AsyncStorage.clear()
-          alert('Storage successfully cleared!')
+          console.log('All phrases successfully cleared!')
+          ToastAndroid.show('All phrases successfully cleared!', ToastAndroid.LONG)
         } catch (e) {
-          alert('Failed to clear the async storage.')
+          console.log('Failed to clear the phrases from storage.')
         }
       }
-
-      const getAllKeys = async () => {
-        let keys = []
-        try {
-            keys = await AsyncStorage.getAllKeys()
-        } catch (e) {
-            // read key error
-        }
-    
-        alert(keys)
-        // example console.log result:
-        // ['@MyApp_user', '@MyApp_key']
-    }
-
-
 
     return (
         <View style={styles.mainContainer}>

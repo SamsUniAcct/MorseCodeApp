@@ -18,26 +18,7 @@ import {
     View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
-import Torch from 'react-native-torch';
-import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const comingSoon = () => {
-    ToastAndroid.show('Coming in a future update', ToastAndroid.LONG);
-}
-
-const getAllKeys = async () => {
-    let keys = []
-    try {
-        keys = await AsyncStorage.getAllKeys()
-    } catch (e) {
-        // read key error
-    }
-
-    alert(keys)
-    // example console.log result:
-    // ['@MyApp_user', '@MyApp_key']
-}
 
 const Phrase = (props) => {
 
@@ -56,8 +37,6 @@ const Phrase = (props) => {
     const space = '  ';
     const morseText = []
 
-
-
     const chars = {
         'A': '01', 'B': '1000', 'C': '1010', 'D': '100', 'E': '0', 'F': '0010',
         'G': '110', 'H': '0000', 'I': '00', 'J': '0111', 'K': '101', 'L': '0100',
@@ -71,39 +50,17 @@ const Phrase = (props) => {
     }
 
     const [codeArray] = useState([])
-    const [codeForPlay, setCodeForPlay] = useState('')
-    //const [codeArrayStr, setCodeArrayStr] = useState('')
-    //const codeArray = [];
-    const setted = {};
 
     function turnTextIntoCode() {
-        // codeArray = [];
         for (let l = 0; l < morseText.length; l++) {
             codeArray[l] = morseText[l].replace(/0/g, dot).replace(/1/g, dash);
         }
-
         return codeArray;
     };
 
-    // function makeCodeArrayStr() {
-    //     setCodeArrayStr(String(codeArray))
-    // //    alert(codeArrayStr)
-    //     return codeArrayStr;
-    // };
-
-
     const morsemaker = (phrase) => {
-        //alert(String(phrase));
         const userMorse = String(phrase).toUpperCase();
-        //userMorse = document.getElementById("userMorse").value.toUpperCase();
-
-        //document.getElementById("users").innerHTML = userMorse;
-
-        //alert(userMorse)
-        //alert(codeForPlay)
-        const morseLength = userMorse.length;
         const text = "";
-        //  const morseText = [];
         for (let i = 0; i < userMorse.length; i++) {
 
             console.log('text is ' + userMorse[i] + text);
@@ -113,34 +70,21 @@ const Phrase = (props) => {
                 console.log('char in map is ' + Object.keys(chars)[j]);
                 if (userMorse[i] == Object.keys(chars)[j]) {
                     morseText[i] = Object.values(chars)[j];
-                    //alert('char and map match! Adding morse to text.  Morse text currently is ' + morseText + '.');
                     break;
                 }
                 j++;
             };
-
         }
 
         turnTextIntoCode();
-        //    makeCodeArrayStr();
-        // alert(codeArrayStr)
         var codeArrayStr = String(codeArray);
         var codeArrayReadable = codeArrayStr.replace(/,/g, space);
-        // document.getElementById("loc").innerHTML = codeArrayReadable;
-        //ToastAndroid.show('Morse code for ' + userMorse + ' is: ' + codeArrayReadable + ' !', ToastAndroid.LONG);
-        //codeForPlay = codeArrayStr.split('')
-        // codeForPlay = codeArrayStr.split('')
-        //   ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
-
-        //   playBox();
         return codeArrayReadable;
     }
-
 
     //start of async storage code adapted from https://github.com/JscramblerBlog/rnAsyncStorageExample/blob/master/App.js
     useEffect(() => {
         getData()
-        
     }, [])
 
     useEffect(() => {
@@ -150,10 +94,11 @@ const Phrase = (props) => {
     const storeData = async () => {
         try {
             await AsyncStorage.setItem(key, phrase)
-            alert('Phrase successfully stored')
+            ToastAndroid.show('Phrase saved', ToastAndroid.LONG);
+            console.log('Phrase successfully stored')
         } catch (e) {
             // saving error
-            alert('Failed to save the phrase to the storage')
+            console.log('Failed to save the phrase to the storage')
         }
     }
 
@@ -164,7 +109,6 @@ const Phrase = (props) => {
                 // value previously stored
                 setButtonPhrase(phrase)
                 setPhrase(phrase)
-                //setCodeArrayStr(morsemaker(phrase))
                 setPlaceholderColor('white')
                 setIsLoaded(true)
                 console.log('Loaded data from storage')
@@ -184,12 +128,9 @@ const Phrase = (props) => {
         if (!phrase) return
         setButtonPhrase(phrase)
         storeData(phrase)
-
         setEditMode(false)
         setCodeArrayStr(morsemaker(phrase))
-
         setDefaultStyle(true)
-        //setPhrase('')
     }
 
     //end of adapted code
@@ -207,11 +148,11 @@ const Phrase = (props) => {
 
     const searchInput = useRef(null)
 
-    function handleFocus(){
+    function handleFocus() {
         searchInput.current.focus()
-      }
+    }
 
-      const removeData = async () => {
+    const removeData = async () => {
         try {
             await AsyncStorage.removeItem(key)
             console.log('Phrase successfully deleted')
@@ -228,11 +169,11 @@ const Phrase = (props) => {
             setCodeArrayStr('')
             setPhrase('')
             setButtonPhrase('')
-            
-        } 
+        }
     }
 
     return (
+
         <View>
 
             <View style={styles.phraseButton}>
@@ -242,12 +183,10 @@ const Phrase = (props) => {
                             <TextInput
                                 style={[defaultStyle ? styles.phraseButtonText && styles.phraseInputDefault : styles.phraseInputEdit]}
                                 value={phrase}
-                                //defaultValue={buttonPhrase}
                                 placeholder='enter phrase'
                                 placeholderTextColor={placeholderColor}
                                 onChangeText={onChangeText}
                                 ref={searchInput}
-                               
                                 onSubmitEditing={onSubmitEditing}
                                 editable={isEditMode}
 
@@ -269,10 +208,7 @@ const Phrase = (props) => {
                     </TouchableHighlight>
                 </View>
 
-
             </View>
-
-
 
         </View>
     );
@@ -280,10 +216,8 @@ const Phrase = (props) => {
 
 const PhrasesScreen = ({ navigation }) => {
 
-    //ToastAndroid.showWithGravityAndOffset('Create and maintain custom phrases', ToastAndroid.LONG, ToastAndroid.TOP, 0, 60);
-
     return (
-        
+
         <View style={styles.mainContainer}>
             <View style={styles.header}>
 
@@ -314,8 +248,8 @@ const PhrasesScreen = ({ navigation }) => {
 
                         <Phrase name="phraseTen" phraseNumber="10" />
 
-
                     </View>
+
                 </ScrollView>
 
             </KeyboardAvoidingView>
@@ -324,7 +258,6 @@ const PhrasesScreen = ({ navigation }) => {
                     <View >
                         <Text style={styles.footerButtonText}>Send</Text>
                         <Icon name="paper-plane" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-
                     </View>
                 </TouchableHighlight>
                 <TouchableHighlight onPress={() => navigation.push('Phrases')} underlayColor="#5E5C63" style={[styles.footerButton, { backgroundColor: '#110F15' }]}>
@@ -407,7 +340,6 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap'
     },
     phraseButton: {
-
         height: 100,
         justifyContent: 'space-evenly',
         alignItems: 'center',
@@ -435,7 +367,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         alignItems: 'center',
         flexDirection: 'row',
-
         flexGrow: 1,
         flexShrink: 0,
         flexBasis: 'auto',
@@ -448,7 +379,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         alignItems: 'center',
         flexDirection: 'column',
-
         flexGrow: 1,
         flexShrink: 0,
         flexBasis: 'auto',
@@ -457,11 +387,9 @@ const styles = StyleSheet.create({
     },
     phraseButtonRightEdit: {
         width: '100%',
-        //height: '100%',
         justifyContent: 'space-evenly',
         alignItems: 'center',
         flexDirection: 'row',
-
         flexGrow: 1,
         flexShrink: 0,
         flexBasis: 'auto',
@@ -470,11 +398,9 @@ const styles = StyleSheet.create({
     },
     phraseButtonRightRemove: {
         width: '100%',
-        //height: '100%',
         justifyContent: 'space-evenly',
         alignItems: 'center',
         flexDirection: 'row',
-
         flexGrow: 1,
         flexShrink: 0,
         flexBasis: 'auto',
@@ -499,7 +425,6 @@ const styles = StyleSheet.create({
         flexShrink: 0,
         paddingBottom: 4,
         flexBasis: 'auto',
-
         backgroundColor: '#5E5C63'
     }
 });

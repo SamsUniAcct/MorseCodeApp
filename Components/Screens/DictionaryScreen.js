@@ -17,7 +17,7 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
 
 const CONTENT = {
-    tableHead: ['Column 0/Row 0', 'Column 1', 'Column 2', 'Column 3'],
+    tableHead: ['Column/Row', 'Column A', 'Column B', 'Column C'],
     //tableTitle: ['Row', 'Row 2', 'Row 3', 'Row 4','Row', 'Row 2', 'Row 3', 'Row 4','Row', 'Row 2', 'Row 3', 'Row 4'],
     tableData: [
         ['A:', '.-', 'B:', '-...', 'C:', '-.-.'],
@@ -50,7 +50,7 @@ const DictionaryScreen = ({ navigation }) => {
                     <View style={styles.scrollSection}>
                         <View style={styles.container}>
                             <Table borderStyle={{ borderWidth: 0.25 }}>
-                                
+
                                 <TableWrapper style={styles.wrapper}>
                                     <Col
                                         data={CONTENT.tableTitle}
@@ -105,14 +105,26 @@ const DictionaryScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
-        
     },
     container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#3D3B42' },
-    head: { height: 10, backgroundColor: 'white' },
-    wrapper: { flexDirection: 'row' },
-    title: { flex: 1, backgroundColor: '#2ecc71' },
-    row: { height: 28 },
-    text: { textAlign: 'center', color: 'white' },
+    head: { 
+        height: 10, 
+        backgroundColor: 'white' 
+    },
+    wrapper: { 
+        flexDirection: 'row' 
+    },
+    title: { 
+        flex: 1, 
+        backgroundColor: '#2ecc71' 
+    },
+    row: { 
+        height: 28 
+    },
+    text: { 
+        textAlign: 'center', 
+        color: 'white' 
+    },
     header: {
         flex: 1,
         backgroundColor: '#5E5C63'
@@ -121,7 +133,6 @@ const styles = StyleSheet.create({
         flex: 4,
         backgroundColor: '#3D3B42'
     },
-    
     footer: {
         flex: 1,
         flexDirection: 'row',
