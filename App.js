@@ -29,7 +29,8 @@ const App = () => {
         <NavigationContainer>
 
             <Stack.Navigator initialRouteName='Home' screenOptions={{
-                animation: 'fade',
+                animation: 'none',
+                animationTypeForReplace: 'push',
                 headerShown: false
             }}>
                 <Stack.Screen name="Phrases" component={PhrasesScreen} options={{

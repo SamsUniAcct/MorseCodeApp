@@ -23,7 +23,7 @@ const SettingsScreen = ({ navigation }) => {
 
 
     const comingSoon = () => {
-        ToastAndroid.show('More settings coming in a future update', ToastAndroid.LONG);
+        ToastAndroid.showWithGravityAndOffset('More settings coming in a future update', ToastAndroid.LONG, ToastAndroid.TOP, 0, 60);
     }
 
     useEffect(() => {

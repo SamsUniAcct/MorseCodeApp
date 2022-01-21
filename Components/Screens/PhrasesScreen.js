@@ -47,6 +47,8 @@ const Phrase = (props) => {
     const [defaultStyle, setDefaultStyle] = useState(true)
     const [buttonPhrase, setButtonPhrase] = useState('')
     const [codeArrayStr, setCodeArrayStr] = useState('')
+    const [placeholderColor, setPlaceholderColor] = useState('#110F15')
+    const [isLoaded, setIsLoaded] = useState(false)
 
     // morse code converter 
     const dot = '.';
@@ -138,7 +140,12 @@ const Phrase = (props) => {
     //start of async storage code adapted from https://github.com/JscramblerBlog/rnAsyncStorageExample/blob/master/App.js
     useEffect(() => {
         getData()
+        
     }, [])
+
+    useEffect(() => {
+        setCodeArrayStr(morsemaker(buttonPhrase))
+    }, [isLoaded])
 
     const storeData = async () => {
         try {
@@ -157,10 +164,13 @@ const Phrase = (props) => {
                 // value previously stored
                 setButtonPhrase(phrase)
                 setPhrase(phrase)
-                setCodeArrayStr(morsemaker(phrase))
+                //setCodeArrayStr(morsemaker(phrase))
+                setPlaceholderColor('white')
+                setIsLoaded(true)
                 console.log('Loaded data from storage')
             } else {
                 //     alert('No data')
+                setPlaceholderColor('white')
             }
         } catch (e) {
             // error reading value
@@ -204,7 +214,7 @@ const Phrase = (props) => {
       const removeData = async () => {
         try {
             await AsyncStorage.removeItem(key)
-            alert('Phrase successfully deleted')
+            console.log('Phrase successfully deleted')
         } catch (e) {
             // saving error
             alert('Failed to delete the phrase')
@@ -213,11 +223,13 @@ const Phrase = (props) => {
 
     const deletePhrase = () => {
         if (buttonPhrase) {
+            setCodeArrayStr('')
             removeData(buttonPhrase)
+            setCodeArrayStr('')
             setPhrase('')
             setButtonPhrase('')
             
-        }
+        } 
     }
 
     return (
@@ -232,10 +244,10 @@ const Phrase = (props) => {
                                 value={phrase}
                                 //defaultValue={buttonPhrase}
                                 placeholder='enter phrase'
-                                placeholderTextColor={'white'}
+                                placeholderTextColor={placeholderColor}
                                 onChangeText={onChangeText}
                                 ref={searchInput}
-                               onBlur={console.log('blur')}
+                               
                                 onSubmitEditing={onSubmitEditing}
                                 editable={isEditMode}
 
@@ -268,9 +280,10 @@ const Phrase = (props) => {
 
 const PhrasesScreen = ({ navigation }) => {
 
-
+    //ToastAndroid.showWithGravityAndOffset('Create and maintain custom phrases', ToastAndroid.LONG, ToastAndroid.TOP, 0, 60);
 
     return (
+        
         <View style={styles.mainContainer}>
             <View style={styles.header}>
 
