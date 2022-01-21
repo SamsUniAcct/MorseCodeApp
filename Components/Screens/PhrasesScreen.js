@@ -174,6 +174,7 @@ const Phrase = (props) => {
         if (!phrase) return
         setButtonPhrase(phrase)
         storeData(phrase)
+
         setEditMode(false)
         setCodeArrayStr(morsemaker(phrase))
 
@@ -200,14 +201,32 @@ const Phrase = (props) => {
         searchInput.current.focus()
       }
 
+      const removeData = async () => {
+        try {
+            await AsyncStorage.removeItem(key)
+            alert('Phrase successfully deleted')
+        } catch (e) {
+            // saving error
+            alert('Failed to delete the phrase')
+        }
+    }
+
+    const deletePhrase = () => {
+        if (buttonPhrase) {
+            removeData(buttonPhrase)
+            setPhrase('')
+            setButtonPhrase('')
+            
+        }
+    }
+
     return (
         <View>
 
             <View style={styles.phraseButton}>
                 <View style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                    <TouchableHighlight disabled={isEditMode || !buttonPhrase} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
+                    <TouchableHighlight disabled={isEditMode || !buttonPhrase} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: isEditMode ? '#5E5C63' : '#110F15' }]}>
                         <View >
-<Text style={styles.phraseButtonText}>A</Text>
                             <TextInput
                                 style={[defaultStyle ? styles.phraseButtonText && styles.phraseInputDefault : styles.phraseInputEdit]}
                                 value={phrase}
@@ -231,7 +250,7 @@ const Phrase = (props) => {
                             <Icon name="options-vertical" size={25} color="#4F8EF7" style={styles.footerButtonText} />
                         </View>
                     </TouchableHighlight>
-                    <TouchableHighlight onPress={editMode} underlayColor="#5E5C63" style={[styles.phraseButtonRightRemove]}>
+                    <TouchableHighlight onPress={deletePhrase} underlayColor="#5E5C63" style={[styles.phraseButtonRightRemove]}>
                         <View>
                             <Icon name="trash" size={25} color="#4F8EF7" style={styles.footerButtonText} />
                         </View>
@@ -468,7 +487,7 @@ const styles = StyleSheet.create({
         paddingBottom: 4,
         flexBasis: 'auto',
 
-        backgroundColor: '#3D3B42'
+        backgroundColor: '#5E5C63'
     }
 });
 
