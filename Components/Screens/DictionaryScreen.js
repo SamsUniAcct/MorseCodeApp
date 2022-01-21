@@ -13,7 +13,7 @@ import {
     View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/SimpleLineIcons';
-
+import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
 
 
 
@@ -23,6 +23,7 @@ const DictionaryScreen = ({ navigation }) => {
     return (
         <View style={styles.mainContainer}>
             <View style={styles.header}>
+                <Text style={styles.footerButtonText}>Dictionary</Text>
             </View>
             <View style={styles.mainSection}>
 
