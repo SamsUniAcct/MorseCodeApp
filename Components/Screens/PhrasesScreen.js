@@ -8,6 +8,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
     Button,
     Keyboard,
+    KeyboardAvoidingView,
     ScrollView,
     StyleSheet,
     Text,
@@ -185,6 +186,7 @@ const Phrase = (props) => {
     const editMode = () => {
         if (!isEditMode) {
             setEditMode(true)
+            handleFocus()
             setDefaultStyle(false)
         } else {
             setEditMode(false)
@@ -192,27 +194,33 @@ const Phrase = (props) => {
         }
     }
 
+    const searchInput = useRef(null)
 
-
+    function handleFocus(){
+        searchInput.current.focus()
+      }
 
     return (
         <View>
-            <TextInput
-                style={[defaultStyle ? styles.phraseButtonText && styles.phraseInputDefault : styles.phraseInputEdit]}
-                value={phrase}
-                //defaultValue={buttonPhrase}
-                placeholder='enter phrase'
-                onChangeText={onChangeText}
-                onSubmitEditing={onSubmitEditing}
-                editable={isEditMode}
 
-            />
             <View style={styles.phraseButton}>
                 <View style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
                     <TouchableHighlight disabled={isEditMode || !buttonPhrase} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
                         <View >
-                            <Text style={styles.phraseButtonText}>Phrase {props.phraseNumber}: {buttonPhrase}</Text>
-                            
+<Text style={styles.phraseButtonText}>A</Text>
+                            <TextInput
+                                style={[defaultStyle ? styles.phraseButtonText && styles.phraseInputDefault : styles.phraseInputEdit]}
+                                value={phrase}
+                                //defaultValue={buttonPhrase}
+                                placeholder='enter phrase'
+                                placeholderTextColor={'white'}
+                                onChangeText={onChangeText}
+                                ref={searchInput}
+                               onBlur={console.log('blur')}
+                                onSubmitEditing={onSubmitEditing}
+                                editable={isEditMode}
+
+                            />
                             <Text style={styles.phraseButtonText}>{codeArrayStr}</Text>
                         </View>
                     </TouchableHighlight>
@@ -248,7 +256,7 @@ const PhrasesScreen = ({ navigation }) => {
             <View style={styles.header}>
 
             </View>
-            <View style={styles.mainSection}>
+            <KeyboardAvoidingView style={styles.mainSection} behavior='position'>
 
                 <ScrollView >
 
@@ -278,7 +286,7 @@ const PhrasesScreen = ({ navigation }) => {
                     </View>
                 </ScrollView>
 
-            </View>
+            </KeyboardAvoidingView>
             <View style={styles.footer}>
                 <TouchableHighlight onPress={() => navigation.push('Home')} underlayColor="#5E5C63" style={styles.footerButton}>
                     <View >
@@ -374,7 +382,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginLeft: 10,
         marginRight: 10,
-        marginBottom: 10,
+        marginBottom: 40,
         flexGrow: 0,
         flexShrink: 1,
         flexBasis: 'auto',
@@ -444,21 +452,23 @@ const styles = StyleSheet.create({
     phraseInputDefault: {
         color: 'white',
         alignSelf: 'center',
+        textAlign: 'center',
         flexGrow: 0,
         flexShrink: 1,
         paddingBottom: 4,
         flexBasis: 'auto',
-        backgroundColor: '#3D3B42'
+        backgroundColor: '#110F15'
     },
     phraseInputEdit: {
         color: 'black',
         alignSelf: 'center',
+        textAlign: 'center',
         flexGrow: 0,
-        flexShrink: 1,
+        flexShrink: 0,
         paddingBottom: 4,
         flexBasis: 'auto',
 
-        backgroundColor: 'white'
+        backgroundColor: '#3D3B42'
     }
 });
 

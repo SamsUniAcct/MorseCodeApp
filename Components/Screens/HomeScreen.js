@@ -428,7 +428,7 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.mainContainer}>
             <View style={styles.header}>
 
-                <TouchableHighlight name='SOS' disabled={playing} onPress={sendSOS} underlayColor="#5E5C63" style={[styles.footerButton, { backgroundColor: buttonColor }]} >
+                <TouchableHighlight name='SOS' disabled={playing} onPress={sendSOS} underlayColor="#5E5C63" style={[styles.sosButton, { backgroundColor: buttonColor }]} >
                     <View >
                         <Text style={styles.footerButtonText}>SOS</Text>
                         <Icon name="flag" size={25} color={sosIconColor} style={styles.PhraseSymbolText} />
@@ -546,6 +546,21 @@ const styles = StyleSheet.create({
         paddingBottom: 4,
         flexBasis: 'auto'
     },
+    sosButton: {
+        height: '100%',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        flexDirection: 'column',
+        marginLeft: 2,
+        marginRight: 2,
+        borderWidth: 0,
+        borderRadius: 5,
+        flexGrow: 1,
+        flexShrink: 1,
+        flexBasis: 2,
+        flexWrap: 'nowrap',
+        backgroundColor: '#232128'
+    },
     PhraseSymbolText: {
         alignSelf: 'center',
         flexGrow: 0,
@@ -572,6 +587,9 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         flexGrow: 0,
         flexShrink: 1,
+        borderWidth: 0,
+        borderRadius: 10,
+  
         flexBasis: 'auto',
         flexWrap: 'nowrap',
         backgroundColor: '#232128'
@@ -590,7 +608,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         alignItems: 'center',
         flexDirection: 'row',
-
+        borderWidth: 0,
+        borderRadius: 10,
         flexGrow: 1,
         flexShrink: 0,
         flexBasis: 'auto',
