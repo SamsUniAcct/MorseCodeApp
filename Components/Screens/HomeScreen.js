@@ -22,26 +22,6 @@ import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isDisabled } from 'react-native/Libraries/LogBox/Data/LogBoxData';
 
-
-const comingSoon = () => {
-    ToastAndroid.show('Coming in a future update', ToastAndroid.LONG);
-}
-
-const getAllKeys = async () => {
-    let keys = []
-    try {
-        keys = await AsyncStorage.getAllKeys()
-    } catch (e) {
-        // read key error
-    }
-
-    alert(keys)
-    // example console.log result:
-    // ['@MyApp_user', '@MyApp_key']
-}
-
-
-
 const Phrase = (props) => {
 
     const [phrase, setPhrase] = useState('');
@@ -51,29 +31,13 @@ const Phrase = (props) => {
     const [playing, setPlaying] = useState(false);
     const [playingColor, setPlayingColor] = useState('white');
     const [phraseIcon, setPhraseIcon] = useState('control-play');
-
-    
-
-    // const [isEditMode, setEditMode] = useState(false)
     const [defaultStyle, setDefaultStyle] = useState(true)
-
 
 
     //start of async storage code adapted from https://github.com/JscramblerBlog/rnAsyncStorageExample/blob/master/App.js
     useEffect(() => {
         getData()
     }, [])
-
-    const storeData = async () => {
-        try {
-            await AsyncStorage.setItem(key, phrase)
-            alert('Phrase successfully stored')
-        } catch (e) {
-            // saving error
-            alert('Failed to save the phrase to the storage')
-        }
-    }
-
 
     const getData = async () => {
         try {
@@ -82,7 +46,6 @@ const Phrase = (props) => {
                 // value previously stored
                 setButtonPhrase(phrase)
                 setPhrase(phrase)
-              //  morsemaker(phrase)
                 console.log('Loaded data from storage');
                 return true;
             } else {
@@ -96,28 +59,13 @@ const Phrase = (props) => {
         } return;
     }
 
-
     //end of adapted code
-
-
-    
-
-
-
-    //play code test
-    const playCode = () => {
-        //this.
-    };
-
-
 
     // morse code converter 
     const dot = '.';
     const dash = '-';
     const space = ' ';
     const morseText = []
-
-
 
     const chars = {
         'A': '01', 'B': '1000', 'C': '1010', 'D': '100', 'E': '0', 'F': '0010',
@@ -132,80 +80,38 @@ const Phrase = (props) => {
     }
 
     const [codeArray] = useState([])
-    const [codeForPlay, setCodeForPlay] = useState('')
-    //const [codeArrayStr, setCodeArrayStr] = useState('')
-    //const codeArray = [];
-    const setted = {};
 
     function turnTextIntoCode() {
-        // codeArray = [];
         for (let l = 0; l < morseText.length; l++) {
             codeArray[l] = morseText[l].replace(/0/g, dot).replace(/1/g, dash);
         }
-
         return codeArray;
     };
 
-    // function makeCodeArrayStr() {
-    //     setCodeArrayStr(String(codeArray))
-    // //    alert(codeArrayStr)
-    //     return codeArrayStr;
-    // };
-
-
     const morsemaker = (phrase) => {
-        //alert(String(phrase));
+
         const userMorse = String(phrase).toUpperCase();
-        //userMorse = document.getElementById("userMorse").value.toUpperCase();
-
-        //document.getElementById("users").innerHTML = userMorse;
-
-        //alert(userMorse)
-        //alert(codeForPlay)
-        const morseLength = userMorse.length;
         const text = "";
-        //  const morseText = [];
         for (let i = 0; i < userMorse.length; i++) {
-
             console.log('text is ' + userMorse[i] + text);
             var j = 0;
             while (j < Object.values(chars).length) {
-
                 console.log('char in map is ' + Object.keys(chars)[j]);
                 if (userMorse[i] == Object.keys(chars)[j]) {
                     morseText[i] = Object.values(chars)[j];
-                    //alert('char and map match! Adding morse to text.  Morse text currently is ' + morseText + '.');
                     break;
                 }
                 j++;
             };
-
         }
 
         turnTextIntoCode();
-        //    makeCodeArrayStr();
-        // alert(codeArrayStr)
         var codeArrayStr = String(codeArray);
-        // const  codeArrayReadable = codeArrayStr.replace(/,/g, space);
-        // document.getElementById("loc").innerHTML = codeArrayReadable;
-        //ToastAndroid.show('Morse code for ' + userMorse + ' is: ' + codeArrayReadable + ' !', ToastAndroid.LONG);
-        //codeForPlay = codeArrayStr.split('')
-        // codeForPlay = codeArrayStr.split('')
-        //   ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
-
-        //   playBox();
         return codeArrayStr;
     }
 
-
-
-
-
     function playBox(codeArrayStr) {
-        //alert(codeArrayStr);
-        //ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
         playLoop(codeArrayStr);
-
     }
 
     const torchOn = () => {
@@ -216,24 +122,18 @@ const Phrase = (props) => {
         Torch.switchState(false);
     };
 
-
-
-
     function playLoop(codeArrayStr) {
         const dotspeed = 300;
         const dashspeed = 800;
         const commaspeed = 200;
         const slashspeed = 300;
         let playloop = 0;
-        // setPlaying(true);
         props.phraseToHomeScreen(true);
         setNowPlaying('Now playing ');
         setPhraseIcon('bubble');
-         setPlayingColor('green');
-        
-        //ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
+        setPlayingColor('green');
 
-
+        ToastAndroid.show('Playing ' + codeArrayStr, ToastAndroid.LONG);
 
         if (playloop <= codeArrayStr.length) {
 
@@ -276,23 +176,20 @@ const Phrase = (props) => {
                     }, 300);
                 } else {
                     console.log('done!');
-                        // setPlaying(false);
-                        props.phraseToHomeScreen(false);
-                        setNowPlaying('');
-                        setPhraseIcon('control-play');
-                     setPlayingColor('white');
-
+                    ToastAndroid.show('Finished playing ' + codeArrayStr, ToastAndroid.LONG);
+                    props.phraseToHomeScreen(false);
+                    setNowPlaying('');
+                    setPhraseIcon('control-play');
+                    setPlayingColor('white');
                 }
 
             }, 500);
         } else {
             console.log('it is done!');
         }
-
     }
 
     function runMorse() {
-
         playBox(morsemaker(phrase));
     }
 
@@ -300,7 +197,6 @@ const Phrase = (props) => {
 
     return (
         <View>
-
             <View style={styles.phraseButton}>
                 <View style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
                     <TouchableHighlight onPress={runMorse} disabled={!buttonPhrase || props.disabled} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: buttonPhrase && !props.disabled ? '#110F15' : '#232128' }]}>
@@ -311,11 +207,7 @@ const Phrase = (props) => {
                     </TouchableHighlight>
                 </View>
 
-
-
             </View>
-
-
 
         </View>
     );
@@ -325,15 +217,13 @@ const Phrase = (props) => {
 const HomeScreen = ({ navigation }) => {
 
     const [playing, setPlaying] = useState(false);
-
     const [buttonColor, setButtonColor] = useState('#110F15');
     const [sosIconColor, setSosIconColor] = useState('white');
-    
     const phraseToHomeScreen = (phraseComponentData) => {
         setPlaying(phraseComponentData);
-       }
+    }
 
-    
+
 
     //start of SOS play code
     const sosCode = ['.', '.', '.', ',', '-', '-', '-', ',', '.', '.', '.'];
@@ -346,12 +236,9 @@ const HomeScreen = ({ navigation }) => {
         Torch.switchState(false);
     };
 
-
-
-
     const sendSOS = () => {
 
-        ToastAndroid.show('SOS code is ' + sosCode + ' !', ToastAndroid.LONG);
+        ToastAndroid.show('SOS playing', ToastAndroid.LONG);
         var dotspeed = 300;
         var dashspeed = 800;
         var commaspeed = 200;
@@ -363,8 +250,6 @@ const HomeScreen = ({ navigation }) => {
 
             let playloop = 0;
             if (playloop <= sosCode.length) {
-
-
 
                 setTimeout(function run() {
                     console.log('color change ' + playloop);
@@ -405,18 +290,15 @@ const HomeScreen = ({ navigation }) => {
                         }, 300);
                     } else {
                         console.log('done!');
+                        ToastAndroid.show('Finished playing SOS.', ToastAndroid.LONG);
                         setPlaying(false);
                         setButtonColor('#110F15');
-                        console.log('please!');
                         setSosIconColor('white');
-                        console.log('thank you!');
-
                     }
                 }, 500);
             } else {
                 console.log('it is done!');
             }
-
         };
 
         sosLoop();
@@ -439,28 +321,28 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.mainSection}>
 
                 <ScrollView >
-                
+
                     <View style={styles.scrollSection}>
-                        
-                        <Phrase name="phraseOne" phraseNumber="1" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
-                        
-                        <Phrase name="phraseTwo" phraseNumber="2" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
 
-                        <Phrase name="phraseThree" phraseNumber="3" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
+                        <Phrase name="phraseOne" phraseNumber="1" phraseToHomeScreen={phraseToHomeScreen} disabled={playing} />
 
-                        <Phrase name="phraseFour" phraseNumber="4" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
+                        <Phrase name="phraseTwo" phraseNumber="2" phraseToHomeScreen={phraseToHomeScreen} disabled={playing} />
 
-                        <Phrase name="phraseFive" phraseNumber="5" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
+                        <Phrase name="phraseThree" phraseNumber="3" phraseToHomeScreen={phraseToHomeScreen} disabled={playing} />
 
-                        <Phrase name="phraseSix" phraseNumber="6" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
+                        <Phrase name="phraseFour" phraseNumber="4" phraseToHomeScreen={phraseToHomeScreen} disabled={playing} />
 
-                        <Phrase name="phraseSeven" phraseNumber="7" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
+                        <Phrase name="phraseFive" phraseNumber="5" phraseToHomeScreen={phraseToHomeScreen} disabled={playing} />
 
-                        <Phrase name="phraseEight" phraseNumber="8" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
+                        <Phrase name="phraseSix" phraseNumber="6" phraseToHomeScreen={phraseToHomeScreen} disabled={playing} />
 
-                        <Phrase name="phraseNine" phraseNumber="9" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
+                        <Phrase name="phraseSeven" phraseNumber="7" phraseToHomeScreen={phraseToHomeScreen} disabled={playing} />
 
-                        <Phrase name="phraseTen" phraseNumber="10" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
+                        <Phrase name="phraseEight" phraseNumber="8" phraseToHomeScreen={phraseToHomeScreen} disabled={playing} />
+
+                        <Phrase name="phraseNine" phraseNumber="9" phraseToHomeScreen={phraseToHomeScreen} disabled={playing} />
+
+                        <Phrase name="phraseTen" phraseNumber="10" phraseToHomeScreen={phraseToHomeScreen} disabled={playing} />
 
 
                     </View>
@@ -472,7 +354,6 @@ const HomeScreen = ({ navigation }) => {
                     <View >
                         <Text style={styles.footerButtonText}>Send</Text>
                         <Icon name="paper-plane" size={25} color="#4F8EF7" style={styles.footerButtonText} />
-
                     </View>
                 </TouchableHighlight>
                 <TouchableHighlight onPress={() => navigation.push('Phrases')} underlayColor="#5E5C63" style={styles.footerButton}>
@@ -577,7 +458,6 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap'
     },
     phraseButton: {
-
         height: 100,
         justifyContent: 'space-evenly',
         alignItems: 'center',
@@ -589,7 +469,6 @@ const styles = StyleSheet.create({
         flexShrink: 1,
         borderWidth: 0,
         borderRadius: 10,
-  
         flexBasis: 'auto',
         flexWrap: 'nowrap',
         backgroundColor: '#232128'
@@ -622,7 +501,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         alignItems: 'center',
         flexDirection: 'column',
-
         flexGrow: 1,
         flexShrink: 0,
         flexBasis: 'auto',
@@ -631,11 +509,9 @@ const styles = StyleSheet.create({
     },
     phraseButtonRightEdit: {
         width: '100%',
-        //height: '100%',
         justifyContent: 'space-evenly',
         alignItems: 'center',
         flexDirection: 'row',
-
         flexGrow: 1,
         flexShrink: 0,
         flexBasis: 'auto',
@@ -644,11 +520,9 @@ const styles = StyleSheet.create({
     },
     phraseButtonRightRemove: {
         width: '100%',
-        //height: '100%',
         justifyContent: 'space-evenly',
         alignItems: 'center',
         flexDirection: 'row',
-
         flexGrow: 1,
         flexShrink: 0,
         flexBasis: 'auto',
@@ -671,7 +545,6 @@ const styles = StyleSheet.create({
         flexShrink: 1,
         paddingBottom: 4,
         flexBasis: 'auto',
-
         backgroundColor: 'white'
     }
 });
