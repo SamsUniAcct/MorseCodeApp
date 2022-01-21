@@ -20,7 +20,7 @@ import Icon from 'react-native-vector-icons/SimpleLineIcons';
 import Torch from 'react-native-torch';
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { isDisabled } from 'react-native/Libraries/LogBox/Data/LogBoxData';
 
 
 const comingSoon = () => {
@@ -44,10 +44,15 @@ const getAllKeys = async () => {
 
 const Phrase = (props) => {
 
-    const [phrase, setPhrase] = useState('')
-    const key = props.name
-    const [buttonPhrase, setButtonPhrase] = useState('')
-    const [buttonColor, setButtonColor] = useState('#110F15')
+    const [phrase, setPhrase] = useState('');
+    const key = props.name;
+    const [buttonPhrase, setButtonPhrase] = useState('');
+    const [nowPlaying, setNowPlaying] = useState('');
+    const [playing, setPlaying] = useState(false);
+    const [playingColor, setPlayingColor] = useState('white');
+    const [phraseIcon, setPhraseIcon] = useState('control-play');
+
+    
 
     // const [isEditMode, setEditMode] = useState(false)
     const [defaultStyle, setDefaultStyle] = useState(true)
@@ -221,16 +226,18 @@ const Phrase = (props) => {
         const slashspeed = 300;
         let playloop = 0;
         // setPlaying(true);
-        // setButtonColor('#232128');
-
-        ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
+        props.phraseToHomeScreen(true);
+        setNowPlaying('Now playing ');
+        setPhraseIcon('bubble');
+         setPlayingColor('green');
+        
+        //ToastAndroid.show(codeArrayStr, ToastAndroid.LONG);
 
 
 
         if (playloop <= codeArrayStr.length) {
 
             setTimeout(function run() {
-
                 console.log('color change ' + playloop);
                 torchOff();
                 console.log('box up ^');
@@ -269,8 +276,11 @@ const Phrase = (props) => {
                     }, 300);
                 } else {
                     console.log('done!');
-                    //     setPlaying(false);
-                    // setButtonColor('#110F15');
+                        // setPlaying(false);
+                        props.phraseToHomeScreen(false);
+                        setNowPlaying('');
+                        setPhraseIcon('control-play');
+                     setPlayingColor('white');
 
                 }
 
@@ -287,15 +297,16 @@ const Phrase = (props) => {
     }
 
 
+
     return (
         <View>
 
             <View style={styles.phraseButton}>
                 <View style={[styles.phraseButtonLeft, { backgroundColor: '#110F15' }]}>
-                    <TouchableHighlight onPress={runMorse} disabled={!buttonPhrase} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: buttonPhrase ? '#110F15' : '#232128' }]}>
+                    <TouchableHighlight onPress={runMorse} disabled={!buttonPhrase || props.disabled} underlayColor="#5E5C63" style={[styles.phraseButtonLeft, { backgroundColor: buttonPhrase && !props.disabled ? '#110F15' : '#232128' }]}>
                         <View >
-                            <Text style={styles.phraseButtonText}>Phrase {props.phraseNumber}: {buttonPhrase}</Text>
-                            <Icon name="bubble" size={25} color="#4F8EF7" style={styles.footerButtonText} />
+                            <Text style={styles.phraseButtonText}>{nowPlaying}Phrase {props.phraseNumber}: {buttonPhrase}</Text>
+                            <Icon name={phraseIcon} size={25} color={playingColor} style={styles.PhraseSymbolText} />
                         </View>
                     </TouchableHighlight>
                 </View>
@@ -316,9 +327,13 @@ const HomeScreen = ({ navigation }) => {
     const [playing, setPlaying] = useState(false);
 
     const [buttonColor, setButtonColor] = useState('#110F15');
+    const [sosIconColor, setSosIconColor] = useState('white');
+    
+    const phraseToHomeScreen = (phraseComponentData) => {
+        setPlaying(phraseComponentData);
+       }
 
-
-
+    
 
     //start of SOS play code
     const sosCode = ['.', '.', '.', ',', '-', '-', '-', ',', '.', '.', '.'];
@@ -344,6 +359,7 @@ const HomeScreen = ({ navigation }) => {
         const sosLoop = () => {
             setPlaying(true);
             setButtonColor('#232128');
+            setSosIconColor('red');
 
             let playloop = 0;
             if (playloop <= sosCode.length) {
@@ -392,7 +408,7 @@ const HomeScreen = ({ navigation }) => {
                         setPlaying(false);
                         setButtonColor('#110F15');
                         console.log('please!');
-
+                        setSosIconColor('white');
                         console.log('thank you!');
 
                     }
@@ -415,7 +431,7 @@ const HomeScreen = ({ navigation }) => {
                 <TouchableHighlight name='SOS' disabled={playing} onPress={sendSOS} underlayColor="#5E5C63" style={[styles.footerButton, { backgroundColor: buttonColor }]} >
                     <View >
                         <Text style={styles.footerButtonText}>SOS</Text>
-                        <Icon name="flag" size={25} color="#4F8EF7" style={styles.footerButtonText} />
+                        <Icon name="flag" size={25} color={sosIconColor} style={styles.PhraseSymbolText} />
                     </View>
 
                 </TouchableHighlight>
@@ -423,28 +439,28 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.mainSection}>
 
                 <ScrollView >
-
+                
                     <View style={styles.scrollSection}>
+                        
+                        <Phrase name="phraseOne" phraseNumber="1" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
+                        
+                        <Phrase name="phraseTwo" phraseNumber="2" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
 
-                        <Phrase name="phraseOne" phraseNumber="1" disabled={playing} />
+                        <Phrase name="phraseThree" phraseNumber="3" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
 
-                        <Phrase name="phraseTwo" phraseNumber="2" />
+                        <Phrase name="phraseFour" phraseNumber="4" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
 
-                        <Phrase name="phraseThree" phraseNumber="3" />
+                        <Phrase name="phraseFive" phraseNumber="5" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
 
-                        <Phrase name="phraseFour" phraseNumber="4" />
+                        <Phrase name="phraseSix" phraseNumber="6" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
 
-                        <Phrase name="phraseFive" phraseNumber="5" />
+                        <Phrase name="phraseSeven" phraseNumber="7" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
 
-                        <Phrase name="phraseSix" phraseNumber="6" />
+                        <Phrase name="phraseEight" phraseNumber="8" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
 
-                        <Phrase name="phraseSeven" phraseNumber="7" />
+                        <Phrase name="phraseNine" phraseNumber="9" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
 
-                        <Phrase name="phraseEight" phraseNumber="8" />
-
-                        <Phrase name="phraseNine" phraseNumber="9" />
-
-                        <Phrase name="phraseTen" phraseNumber="10" />
+                        <Phrase name="phraseTen" phraseNumber="10" phraseToHomeScreen={phraseToHomeScreen} disabled={playing}/>
 
 
                     </View>
@@ -524,6 +540,13 @@ const styles = StyleSheet.create({
     },
     footerButtonText: {
         color: 'white',
+        alignSelf: 'center',
+        flexGrow: 0,
+        flexShrink: 1,
+        paddingBottom: 4,
+        flexBasis: 'auto'
+    },
+    PhraseSymbolText: {
         alignSelf: 'center',
         flexGrow: 0,
         flexShrink: 1,
