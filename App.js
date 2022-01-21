@@ -1,112 +1,82 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
+ * Morse Code React Native App
+ * https://github.com/SamsUniAcct/MorseCodeApp
  */
 
 import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import HomeScreen from './Components/Screens/HomeScreen';
+import PhrasesScreen from './Components/Screens/PhrasesScreen';
+import DictionaryScreen from './Components/Screens/DictionaryScreen';
+import SettingsScreen from './Components/Screens/SettingsScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const Stack = createNativeStackNavigator();
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
+const clearStorage = async () => {
+    try {
+        await AsyncStorage.clear()
+        alert('Storage successfully cleared!')
+    } catch (e) {
+        alert('Failed to clear the async storage.')
+    }
+}
+
+const App = () => {
+    return (
+
+        <NavigationContainer>
+
+            <Stack.Navigator initialRouteName='Home' screenOptions={{
+                animation: 'none',
+                animationTypeForReplace: 'push',
+                headerShown: false
+            }}>
+                <Stack.Screen name="Phrases" component={PhrasesScreen} options={{
+                    title: 'My Phrases',
+                    headerStyle: {
+                        backgroundColor: '#5E5C63',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }} />
+                <Stack.Screen name="Home" component={HomeScreen} options={{
+                    title: 'Send Message',
+                    headerStyle: {
+                        backgroundColor: '#5E5C63',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }} />
+                
+                <Stack.Screen name="Dictionary" component={DictionaryScreen} options={{
+                    title: 'Dictionary',
+                    headerStyle: {
+                        backgroundColor: '#5E5C63',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }} />
+                <Stack.Screen name="Settings" component={SettingsScreen} options={{
+                    title: 'Settings',
+                    headerStyle: {
+                        backgroundColor: '#5E5C63',
+                    },
+                    headerTintColor: '#fff',
+                    headerTitleStyle: {
+                        fontWeight: 'bold',
+                    },
+                }} />
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
 };
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
